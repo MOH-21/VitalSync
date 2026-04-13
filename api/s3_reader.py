@@ -8,7 +8,8 @@ import pandas as pd
 import pyarrow.parquet as pq
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/home/bashr/projects/VitalSync/.env")
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 S3_BUCKET = os.getenv("S3_BUCKET", "vitalsync-data")
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")

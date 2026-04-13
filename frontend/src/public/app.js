@@ -11,6 +11,7 @@
   const recommendationEl = document.getElementById("recommendation");
 
   let activeMetric = "heart_rate";
+  const cache = {};
 
   // --- Initialization ---
 
@@ -49,6 +50,15 @@
   // --- Data fetching ---
 
   async function fetchRecommendation(userId, metricName) {
+    var cacheKey = userId + ":" + metricName;
+
+    if (cache[cacheKey]) {
+      renderSummary(cache[cacheKey].data_summary);
+      renderRecommendation(cache[cacheKey].recommendation);
+      showOnly(contentEl);
+      return;
+    }
+
     showOnly(loadingEl);
 
     try {
@@ -58,7 +68,7 @@
         "&metric_name=" +
         encodeURIComponent(metricName);
 
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
       if (!res.ok) {
         const body = await res.json().catch(function () {
           return {};
@@ -67,6 +77,7 @@
       }
 
       const data = await res.json();
+      cache[cacheKey] = data;
       renderSummary(data.data_summary);
       renderRecommendation(data.recommendation);
       showOnly(contentEl);
@@ -146,6 +157,27 @@
     } else {
       showOnly(placeholderEl);
     }
+  });
+
+  // Prefetch all metrics for the selected user so tab switching is instant
+  function prefetchAll(userId) {
+    ["heart_rate", "steps", "spo2"].forEach(function (metric) {
+      var key = userId + ":" + metric;
+      if (!cache[key]) {
+        var url = "/api/recommendations?user_id=" +
+          encodeURIComponent(userId) + "&metric_name=" +
+          encodeURIComponent(metric);
+        fetch(url).then(function (res) {
+          if (res.ok) return res.json();
+        }).then(function (data) {
+          if (data) cache[key] = data;
+        }).catch(function () {});
+      }
+    });
+  }
+
+  userSelect.addEventListener("change", function () {
+    if (userSelect.value) prefetchAll(userSelect.value);
   });
 
   // --- Start ---

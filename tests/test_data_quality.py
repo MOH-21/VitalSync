@@ -8,7 +8,8 @@ import os
 import pytest
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/home/bashr/projects/VitalSync/.env")
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 
 def _read_layer(s3_client, bucket, prefix):

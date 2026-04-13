@@ -46,7 +46,7 @@ def run_streaming(spark):
         .schema(SILVER_SCHEMA)
         .format("parquet")
         .option("path", SILVER_PATH)
-        .option("maxFilesPerTrigger", 100)
+        .option("maxFilesPerTrigger", 10)
         .load()
     )
 
@@ -68,7 +68,7 @@ def run_streaming(spark):
         .option("path", GOLD_PATH)
         .option("checkpointLocation", GOLD_CHECKPOINT)
         .partitionBy("date")
-        .trigger(processingTime="30 seconds")
+        .trigger(processingTime="60 seconds")
         .queryName("gold_health_agg")
         .start()
     )

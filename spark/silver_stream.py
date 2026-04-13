@@ -24,7 +24,7 @@ def main():
         .schema(BRONZE_SCHEMA)
         .format("parquet")
         .option("path", BRONZE_PATH)
-        .option("maxFilesPerTrigger", 100)
+        .option("maxFilesPerTrigger", 10)
         .load()
     )
 
@@ -48,14 +48,14 @@ def main():
 
     query = (
         silver
-        .coalesce(4)
+        .coalesce(1)
         .writeStream
         .format("parquet")
         .outputMode("append")
         .option("path", SILVER_PATH)
         .option("checkpointLocation", SILVER_CHECKPOINT)
         .partitionBy("date")
-        .trigger(processingTime="30 seconds")
+        .trigger(processingTime="60 seconds")
         .queryName("silver_health_events")
         .start()
     )

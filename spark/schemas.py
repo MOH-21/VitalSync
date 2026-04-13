@@ -3,6 +3,7 @@ Shared schema definitions and SparkSession factory for the VitalSync pipeline.
 """
 
 import os
+from pathlib import Path
 from pyspark.sql import SparkSession
 from pyspark.sql.types import (
     StructType, StructField, StringType, IntegerType, DoubleType,
@@ -11,7 +12,7 @@ from pyspark.sql.types import (
 from dotenv import load_dotenv
 
 # Load environment variables from project root
-load_dotenv("/home/bashr/projects/VitalSync/.env")
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 # --- Shared schema matching Kafka JSON payloads ---
 HEALTH_EVENT_SCHEMA = StructType([

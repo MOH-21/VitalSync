@@ -50,7 +50,7 @@ def main():
 
     query = (
         parsed
-        .coalesce(4)
+        .coalesce(1)
         .writeStream
         .format("parquet")
         .outputMode("append")

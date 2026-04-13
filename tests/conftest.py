@@ -3,7 +3,8 @@ import boto3
 import pytest
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/home/bashr/projects/VitalSync/.env")
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 
 @pytest.fixture(scope="session")

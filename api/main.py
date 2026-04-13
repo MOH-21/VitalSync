@@ -2,7 +2,8 @@
 
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/home/bashr/projects/VitalSync/.env")
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware

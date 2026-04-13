@@ -5,7 +5,8 @@ import os
 import anthropic
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/home/bashr/projects/VitalSync/.env")
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
 MAX_TOKENS = 500
@@ -47,10 +48,19 @@ def get_recommendation(user_id: str, metric_name: str, data_summary: dict) -> st
         f"medical diagnoses — frame advice as general wellness suggestions."
     )
 
-    message = client.messages.create(
-        model=ANTHROPIC_MODEL,
-        max_tokens=MAX_TOKENS,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    try:
+        message = client.messages.create(
+            model=ANTHROPIC_MODEL,
+            max_tokens=MAX_TOKENS,
+            timeout=15.0,
+            messages=[{"role": "user", "content": prompt}],
+        )
+    except anthropic.APITimeoutError:
+        return "Recommendation temporarily unavailable — the AI service timed out. Please try again."
+    except anthropic.RateLimitError:
+        return "Recommendation temporarily unavailable — rate limit reached. Please try again in a moment."
+
+    if not message.content:
+        return "No recommendation could be generated at this time."
 
     return message.content[0].text
