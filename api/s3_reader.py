@@ -98,10 +98,18 @@ def get_user_data(user_id: str, metric_name: str) -> dict:
 
     df = pd.concat(frames, ignore_index=True)
 
-    # Filter to the requested metric
-    if "metric_name" in df.columns:
+    # Map metric_name to gold column names
+    METRIC_COL_MAP = {
+        "heart_rate": "avg_heart_rate",
+        "spo2": "avg_spo2",
+        "steps": "total_steps",
+    }
+    value_col_override = METRIC_COL_MAP.get(metric_name)
+    if value_col_override and value_col_override in df.columns:
+        pass  # we'll use value_col_override below
+    elif "metric_name" in df.columns:
         df = df[df["metric_name"] == metric_name]
-    elif metric_name not in df.columns:
+    elif metric_name not in df.columns and not value_col_override:
         raise ValueError(f"Metric '{metric_name}' not found in data")
 
     if df.empty:
@@ -123,7 +131,9 @@ def get_user_data(user_id: str, metric_name: str) -> dict:
         raise ValueError(f"No recent {metric_name} data for user_id={user_id}")
 
     # Determine the value column
-    if "metric_name" in df.columns:
+    if value_col_override and value_col_override in df.columns:
+        value_col = value_col_override
+    elif "metric_name" in df.columns:
         value_col = None
         for candidate in ["avg", "mean", "value", "avg_value"]:
             if candidate in df.columns:

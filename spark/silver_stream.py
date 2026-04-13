@@ -8,6 +8,7 @@ from pyspark.sql import functions as F
 from schemas import (
     get_spark_session,
     BRONZE_PATH,
+    BRONZE_SCHEMA,
     SILVER_PATH,
     SILVER_CHECKPOINT,
 )
@@ -20,6 +21,7 @@ def main():
 
     bronze_stream = (
         spark.readStream
+        .schema(BRONZE_SCHEMA)
         .format("parquet")
         .option("path", BRONZE_PATH)
         .option("maxFilesPerTrigger", 100)

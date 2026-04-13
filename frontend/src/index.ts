@@ -10,6 +10,7 @@ app.use(
   createProxyMiddleware({
     target: "http://localhost:8000",
     changeOrigin: true,
+    pathRewrite: { "^": "/api" },
   })
 );
 

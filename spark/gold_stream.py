@@ -13,6 +13,7 @@ from pyspark.sql.types import TimestampType
 from schemas import (
     get_spark_session,
     SILVER_PATH,
+    SILVER_SCHEMA,
     GOLD_PATH,
     GOLD_CHECKPOINT,
 )
@@ -42,6 +43,7 @@ def run_streaming(spark):
 
     silver_stream = (
         spark.readStream
+        .schema(SILVER_SCHEMA)
         .format("parquet")
         .option("path", SILVER_PATH)
         .option("maxFilesPerTrigger", 100)

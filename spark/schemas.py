@@ -5,7 +5,8 @@ Shared schema definitions and SparkSession factory for the VitalSync pipeline.
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.types import (
-    StructType, StructField, StringType, IntegerType, DoubleType
+    StructType, StructField, StringType, IntegerType, DoubleType,
+    TimestampType, LongType, BooleanType, DateType
 )
 from dotenv import load_dotenv
 
@@ -34,9 +35,34 @@ BRONZE_CHECKPOINT = f"s3a://{S3_BUCKET}/checkpoints/bronze/"
 SILVER_CHECKPOINT = f"s3a://{S3_BUCKET}/checkpoints/silver/"
 GOLD_CHECKPOINT = f"s3a://{S3_BUCKET}/checkpoints/gold/"
 
+BRONZE_SCHEMA = StructType([
+    StructField("user_id", StringType(), nullable=False),
+    StructField("timestamp", StringType(), nullable=False),
+    StructField("heart_rate", IntegerType(), nullable=True),
+    StructField("steps", IntegerType(), nullable=True),
+    StructField("spo2", DoubleType(), nullable=True),
+    StructField("kafka_partition", IntegerType(), nullable=True),
+    StructField("kafka_offset", LongType(), nullable=True),
+    StructField("ingestion_timestamp", TimestampType(), nullable=True),
+    StructField("date", DateType(), nullable=True),
+])
+
+SILVER_SCHEMA = StructType([
+    StructField("user_id", StringType(), nullable=False),
+    StructField("timestamp", StringType(), nullable=False),
+    StructField("heart_rate", IntegerType(), nullable=True),
+    StructField("steps", IntegerType(), nullable=True),
+    StructField("spo2", DoubleType(), nullable=True),
+    StructField("kafka_partition", IntegerType(), nullable=True),
+    StructField("kafka_offset", LongType(), nullable=True),
+    StructField("ingestion_timestamp", TimestampType(), nullable=True),
+    StructField("date", DateType(), nullable=True),
+    StructField("is_anomaly", BooleanType(), nullable=True),
+])
+
 SPARK_PACKAGES = ",".join([
     "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1",
-    "org.apache.hadoop:hadoop-aws:3.3.6",
+    "org.apache.hadoop:hadoop-aws:3.3.4",
     "com.amazonaws:aws-java-sdk-bundle:1.12.262",
 ])
 
