@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+boto3
+anthropic
+pandas
+pyarrow
+python-dotenv

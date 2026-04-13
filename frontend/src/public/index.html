@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitalSync Health Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>VitalSync <span class="header-accent">Health Dashboard</span></h1>
+  </header>
+
+  <main>
+    <section class="controls">
+      <label for="user-select">Patient</label>
+      <select id="user-select" disabled>
+        <option value="">Select a patient...</option>
+      </select>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-metric="heart_rate" role="tab" aria-selected="true">Heart Rate</button>
+      <button class="tab" data-metric="steps" role="tab" aria-selected="false">Steps</button>
+      <button class="tab" data-metric="spo2" role="tab" aria-selected="false">SpO2</button>
+    </nav>
+
+    <section id="results" class="results">
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing health data...</p>
+      </div>
+
+      <div id="error" class="error-message hidden"></div>
+
+      <div id="content" class="content hidden">
+        <div class="card">
+          <h2>Data Summary</h2>
+          <table id="summary-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Recommendation</h2>
+          <div id="recommendation" class="recommendation-text"></div>
+        </div>
+      </div>
+
+      <div id="placeholder" class="placeholder">
+        <p>Select a patient and metric to view health insights.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
