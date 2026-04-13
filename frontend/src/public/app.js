@@ -21,8 +21,9 @@
       const users = await res.json();
       users.forEach(function (user) {
         const opt = document.createElement("option");
-        opt.value = user.user_id || user.id;
-        opt.textContent = user.name || "Patient " + (user.user_id || user.id);
+        const userId = typeof user === "string" ? user : (user.user_id || user.id);
+        opt.value = userId;
+        opt.textContent = "Patient " + userId.replace("user_", "");
         userSelect.appendChild(opt);
       });
       userSelect.disabled = false;
